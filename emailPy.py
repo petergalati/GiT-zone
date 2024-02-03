@@ -76,6 +76,20 @@ def send_message(service, user_id, message):
         print(f"Message sent! Message Id: {message['id']}")
     except Exception as error:
         print(f"An error occurred: {error}")
+def proximity_filter(proximity, maxProximity): #-90<=latitude<=90, -180<=longitude<=180
+
+    if(proximity<=maxProximity):
+        return True
+    return False
+def getDistance(latlongUser, latlongSafeZone, radiusSafeZone):
+    latDifference = latlongUser[0] - latlongSafeZone[0]
+
+    longDifference = latlongUser[1] - latlongSafeZone[1]
+    vertical = latDifference * 110.9
+    horizontal = longDifference * 87.8
+    distance = math.sqrt(vertical^2 + horizontal^2)
+    proximity = distance - radiusSafeZone
+    return proximity
 if __name__ == "__main__":
     gmail_service = main()
 
@@ -83,15 +97,17 @@ if __name__ == "__main__":
     sender_email = 'archierowbotham2021@gmail.com'
     # Replace 'recipient@example.com' with the recipient's email
     to_email = 'archierowbotham2021@gmail.com'
-    subject = 'Get In The Zone Alert'
-    body = 'This is a test email sent using Gmail API.'
+    subject = 'New Safezone Alert'
+    body = 'Dear {userName}, \n There is a safe zone approximately {prox} km away, at coordinates {latlongUser[0]} degrees east, {latlongUser[1]} north \n From Team at Get In Your Zone'
+    userc = [None] * 4
+    latlongUser = userc[0]
+    latlongSafeZone = userc[1]
+    radiusSafeZone = userc[2]
+    maxProximity = userc[3]
+    prox = getDistance(latlongUser, latlongSafeZone, radiusSafeZone)
+    doEmail = proximity_filter(prox,maxProximity)
+    if(doEmail):
+        send_email(gmail_service, sender_email, to_email, subject, body)
 
-    send_email(gmail_service, sender_email, to_email, subject, body)
-def proximity_filter(latlongUser, latlongSafeZone, radiusSafeZone, maxProximity): #-90<=latitude<=90, -180<=longitude<=180
-    latDifference = latlongUser[0] - latlongSafeZone[0]
-    longDifference = latlongUser[1] - latlongSafeZone[1]
-    distance = math.sqrt(latDifference^2 + longDifference^2)
-    proximity = distance - radiusSafeZone
-    if(proximity<maxProximity):
-        return True
-    return False
+
+
