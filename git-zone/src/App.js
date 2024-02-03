@@ -15,7 +15,7 @@ function App() {
                     GiT-zone
                 </p>
             </header>
-            <div style={{ height: '75vh', width: '75%' }}>
+            <div style={{ height: '100vh', width: '100%' }}>
             {badmap}
         </div>
         </div>

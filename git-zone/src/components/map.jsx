@@ -1,5 +1,7 @@
 import {APIProvider, Map, Marker} from "@vis.gl/react-google-maps";
 import { useState} from "react";
+import { Menu } from "./menu";
+//import { addZone } from "../../../backend/firebase/query.js";
 const nullMarker =[
     {
     position:{lat: 51.507351, lng: -0.127758 },
@@ -7,12 +9,16 @@ const nullMarker =[
     title:'starter'
 },
     ]
+const zones = [];  
+// console.  
 
 
 
 const BadMap = () => {
     const [markerList, setMarkerList] = useState(nullMarker);
     const [mapKey, setMapKey] = useState(1);
+    const [menuPosition, setMenuPosition] = useState(null)
+    const [showMenu, setShowMenu] = useState(false);
 
     const handleMapClick = (mapsMouseEvent) => {
 
@@ -21,12 +27,19 @@ const BadMap = () => {
             clickable: true,
             title: "New Marker" + markerList.length.toString()
         };
+        setMenuPosition(mapsMouseEvent.detail.latLng);
+        setShowMenu(true);
         setMapKey((prevKey) => prevKey + 1);
         setMarkerList((prevMarkers) => [...prevMarkers, newMarker]);
+
     };
+    const handleAddZone = (zoneData) => {
+        zones.push(zoneData)
+        console.log(zones) // Assuming addZone is imported
+        setShowMenu(false);};
 
 
-    return (<div style={{ height: '75vh', width: '75%' }}>
+    return (<div style={{ height: '100vh', width: '100%' }}>
         <APIProvider apiKey={"AIzaSyDVGnLbmVRcZ9s82BWKTJ01SipwMv9fDQU"}>
             <Map
                 key={mapKey}
@@ -51,9 +64,10 @@ const BadMap = () => {
                 ))}
 
             </Map>
+            {showMenu && <Menu position={menuPosition} onAddZone={handleAddZone} />}
         </APIProvider>
 
-            }
+            
     </div>
     );
 }
