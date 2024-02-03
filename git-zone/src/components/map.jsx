@@ -1,48 +1,73 @@
-import React from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import {APIProvider, Map, Marker} from "@vis.gl/react-google-maps";
+import { useState} from "react";
+const nullMarker =[
+    {
+    position:{lat: 51.507351, lng: -0.127758 },
+    clickable :true,
+    title:'penis'
+},    {
+        position:{lat: 51.607351, lng: -0.127758 },
+        clickable :true,
+        title:'penis2'
+    }]
 
-const containerStyle = {
-    width: '400px',
-    height: '400px'
-};
 
-const center = {
-    lat: -3.745,
-    lng: -38.523
-};
 
-function BasicMap() {
-    const { isLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: "YOUR_API_KEY"
-    })
+const BadMap = () => {
+    const [markerList, setMarkerList] = useState(nullMarker);
+    const [mapKey, setMapKey] = useState(1);
 
-    const [map, setMap] = React.useState(null)
+    const handleMapClick = (mapsMouseEvent) => {
+        const newMarker = {
+            position: mapsMouseEvent.latLng,
+            clickable: true,
+            title: "New Marker"
+        };
+        setMapKey((prevKey) => prevKey + 1);
+        setMarkerList((prevMarkers) => [...prevMarkers, newMarker]);
+    };
 
-    const onLoad = React.useCallback(function callback(map) {
-        // This is just an example of getting and using the map instance!!! don't just blindly copy!
-        const bounds = new window.google.maps.LatLngBounds(center);
-        map.fitBounds(bounds);
 
-        setMap(map)
-    }, [])
+    return (<div style={{ height: '75vh', width: '75%' }}>
+        <APIProvider apiKey={"AIzaSyDVGnLbmVRcZ9s82BWKTJ01SipwMv9fDQU"}>
+            <Map
+                key={mapKey}
+                width="100%"
+                height="400px"
+                zoom={15}
+                center={{lat: 51.507351, lng: -0.127758}}
+                gestureHandling={'greedy'}
+                disableDefaultUI={true}
+                onClick={handleMapClick}
 
-    const onUnmount = React.useCallback(function callback(map) {
-        setMap(null)
-    }, [])
+            >
 
-    return isLoaded ? (
-        <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-        >
-            { /* Child components, such as markers, info windows, etc. */ }
-            <></>
-        </GoogleMap>
-    ) : <></>
+                {markerList.map((marker, index) => (
+                    <Marker
+                        key={index}
+                        position={marker.position}
+                        clickable={marker.clickable}
+                        title={marker.title}
+                    />
+
+                ))}
+
+            </Map>
+        </APIProvider>
+            {markerList.map((marker,index)=>(
+                <div>{index}{marker.title}</div>
+                ))
+
+            }
+    </div>
+    );
 }
 
-export default React.memo(BasicMap)
+function map() {
+
+    return (
+        BadMap()
+    )
+}
+
+export default map
