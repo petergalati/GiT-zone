@@ -4,12 +4,9 @@ const nullMarker =[
     {
     position:{lat: 51.507351, lng: -0.127758 },
     clickable :true,
-    title:'penis'
-},    {
-        position:{lat: 51.607351, lng: -0.127758 },
-        clickable :true,
-        title:'penis2'
-    }]
+    title:'starter'
+},
+    ]
 
 
 
@@ -18,10 +15,11 @@ const BadMap = () => {
     const [mapKey, setMapKey] = useState(1);
 
     const handleMapClick = (mapsMouseEvent) => {
+
         const newMarker = {
-            position: mapsMouseEvent.latLng,
+            position: mapsMouseEvent.detail.latLng,
             clickable: true,
-            title: "New Marker"
+            title: "New Marker" + markerList.length.toString()
         };
         setMapKey((prevKey) => prevKey + 1);
         setMarkerList((prevMarkers) => [...prevMarkers, newMarker]);
@@ -54,9 +52,6 @@ const BadMap = () => {
 
             </Map>
         </APIProvider>
-            {markerList.map((marker,index)=>(
-                <div>{index}{marker.title}</div>
-                ))
 
             }
     </div>
