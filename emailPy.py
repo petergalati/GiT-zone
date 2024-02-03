@@ -1,3 +1,9 @@
+## RUN THIS FILE ON REGULAR UPDATE( 5 MINS?)
+##Steps to make functional:
+#Create JS to python API
+#Reference in relevant data frames
+#Add a few example email addresses to send to
+
 import os.path
 import base64
 import math
