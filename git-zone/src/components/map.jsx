@@ -18,6 +18,7 @@ const BadMap = () => {
     const [mapKey, setMapKey] = useState(1);
 
     const handleMapClick = (mapsMouseEvent) => {
+        console.log('Clicked LatLng:', mapsMouseEvent.latLng);
         const newMarker = {
             position: mapsMouseEvent.latLng,
             clickable: true,
