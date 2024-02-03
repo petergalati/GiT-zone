@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, addDoc, doc, setDoc } from "firebase/firestore";
+import { db } from './setup.js'; // adjust the path as needed
 
 export async function addZone(zoneData) {
-    const db = getFirestore();
 
     const data = {
         capacity: zoneData.capacity,
@@ -18,7 +18,6 @@ export async function addZone(zoneData) {
 };
 
 export async function getZones() {
-    const db = getFirestore();
     const querySnapshot = await getDocs(collection(db, "zones"));
     const zones = [];
     querySnapshot.forEach((doc) => {
