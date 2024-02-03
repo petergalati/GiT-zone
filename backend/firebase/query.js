@@ -4,16 +4,16 @@ import { getFirestore, collection, getDocs, addDoc, doc, setDoc } from "firebase
 export async function addZone(zoneData) {
     const db = getFirestore();
 
-    const zoneData = {
+    const data = {
         capacity: zoneData.capacity,
-        epicenter: zoneData,
+        epicenter: zoneData.epicenter,
         imM: zoneData.imM,
         isFC: zoneData.isFC,
         nickname: zoneData.nickname,
         radius: zoneData.radius,
     };
 
-    const res = await db.collection("zones").add({zoneData});
+    const res = await addDoc(collection(db, "zones"), data);
     console.log(res);
 };
 
