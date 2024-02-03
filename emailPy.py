@@ -92,22 +92,23 @@ def getDistance(latlongUser, latlongSafeZone, radiusSafeZone):
     return proximity
 if __name__ == "__main__":
     gmail_service = main()
-
-    # Replace 'email@example.com' with the authorized email
     sender_email = 'archierowbotham2021@gmail.com'
-    # Replace 'recipient@example.com' with the recipient's email
-    to_email = 'archierowbotham2021@gmail.com'
     subject = 'New Safezone Alert'
-    body = 'Dear {userName}, \n There is a safe zone approximately {prox} km away, at coordinates {latlongUser[0]} degrees east, {latlongUser[1]} north \n From Team at Get In Your Zone'
-    userc = [None] * 4
-    latlongUser = userc[0]
-    latlongSafeZone = userc[1]
-    radiusSafeZone = userc[2]
-    maxProximity = userc[3]
-    prox = getDistance(latlongUser, latlongSafeZone, radiusSafeZone)
-    doEmail = proximity_filter(prox,maxProximity)
-    if(doEmail):
-        send_email(gmail_service, sender_email, to_email, subject, body)
+    users = [None] * 10 #update for sql
+    for i in range(10):
+
+        to_email = 'archierowbotham2021@gmail.com' #change to user[i]$Email?
+        userc = [None] * 4 #update when sql
+        latlongUser = userc[0]
+        latlongSafeZone = userc[1]
+        radiusSafeZone = userc[2]
+        maxProximity = userc[3]
+
+        prox = getDistance(latlongUser, latlongSafeZone, radiusSafeZone)
+        doEmail = proximity_filter(prox,maxProximity)
+        if(doEmail):
+            body = 'Dear {userName}, \n There is a safe zone approximately {prox} km away, at coordinates {latlongUser[0]} degrees east, {latlongUser[1]} north \n From the team at Get In Your Zone'
+            send_email(gmail_service, sender_email, to_email, subject, body)
 
 
 
