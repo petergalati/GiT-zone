@@ -164,16 +164,17 @@ export async function getLatestPosition() {
     const querySnapshot = await getDocs(collection(db, 'terra/2022-03-16/activity'));
     const positions = [];
     querySnapshot.forEach((doc) => {
-        positions.push(doc.id, doc.data());
+        positions.push({ id: doc.id, data: doc.data() });
     });
-    console.log(positions);
+    // console.log(positions);
 
     const lastPosSamples = [];
-    for (let i = 0; i < positions[1].length; i++) {
+    for (let i = 0; i < positions.length; i++) {
         // posData.push(positions[i].position_data);
-        const posSample = positions[1][i].position_data.position_samples;
+        const posSample = positions[i].data.position_data.position_samples;
+        // console.log(posSample);
         const lastPosSample = posSample[posSample.length - 1];
-        lastPosSamples.push(positions[0], lastPosSample);
+        lastPosSamples.push({id: positions[i].id, data: lastPosSample.coords_lat_lng_deg});
     }
 
     
