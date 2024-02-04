@@ -41,13 +41,6 @@ expressApp.get('/getZones', async (req, res) => {
 expressApp.get('/getLatestPosition', async (req, res) => {
     try {
         const positions = await getLatestPosition();
-        const lastPosSamples = [];
-        for (let i = 0; i < positions.length; i++) {
-            // posData.push(positions[i].position_data);
-            const posSample = positions[i].position_data.position_samples;
-            const lastPosSample = posSample[posSample.length - 1];
-            lastPosSamples.push(lastPosSample);
-        }
         console.log(lastPosSamples);
         res.status(200).json(lastPosSamples);
     } catch (error) {

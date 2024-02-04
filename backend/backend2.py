@@ -35,7 +35,7 @@ async def auth():
 @app.get('/on_auth_success')
 async def auth_success(user_id: str, reference_id: str):
 
-    res = requests.get('https://api.tryterra.co/v2/activity',
+    res = requests.get('https://api.tryterra.co/v2/body',
         params={
             'user_id': user_id, 
             'start_date': '1706918400', 
@@ -53,8 +53,6 @@ async def auth_success(user_id: str, reference_id: str):
 
     return RedirectResponse('https://www.google.com')
 
-
-
     
 
 
@@ -62,7 +60,3 @@ async def auth_success(user_id: str, reference_id: str):
 async def get_zones():
     zones = get_zones_from_firestore()
     return zones
-
-
-
-
