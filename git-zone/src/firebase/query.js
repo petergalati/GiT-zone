@@ -164,9 +164,19 @@ export async function getLatestPosition() {
     const querySnapshot = await getDocs(collection(db, 'terra/2022-03-16/activity'));
     const positions = [];
     querySnapshot.forEach((doc) => {
-        positions.push(doc.data());
+        positions.push(doc.id, doc.data());
     });
     console.log(positions);
-    return positions;
+
+    const lastPosSamples = [];
+    for (let i = 0; i < positions[1].length; i++) {
+        // posData.push(positions[i].position_data);
+        const posSample = positions[1][i].position_data.position_samples;
+        const lastPosSample = posSample[posSample.length - 1];
+        lastPosSamples.push(positions[0], lastPosSample);
+    }
+
+    
+    return lastPosSamples;
 }
 
