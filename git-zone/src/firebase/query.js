@@ -102,6 +102,29 @@ export async function getHaversine(lat1, lon1, lat2, lon2){ //check that this wo
     return distance
 }
 
+export async function addCivilian(civilianData) {
+    const data = {
+        name: civilianData.name,
+        email: civilianData.email,
+        fitness: civilianData.fitness,
+        latitude: civilianData.latitude,
+        longitude: civilianData.longitude,
+        class: civilianData.class,
+    };
+
+    const assignedSafeData = {
+        fitness: data.fitness,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        class: data.class,
+    }
+    zone = assignSafeZone(assignedSafeData)
+
+    const res = await addDoc(collection(db, "civilians"), data);
+    console.log(res);
+}
+
+
 
 
 
