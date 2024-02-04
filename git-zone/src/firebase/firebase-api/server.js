@@ -1,5 +1,5 @@
 // import { db } from '../setup.js';
-import { addZone, getZones, getLatestPosition } from '../query.js';
+import { addZone, getZones, getLatestPosition, getCivilians } from '../query.js';
 import express from 'express';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -31,6 +31,17 @@ expressApp.get('/getZones', async (req, res) => {
     try {
         const zones = await getZones();
         res.status(200).json(zones);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+// Endpoint to get civilians
+expressApp.get('/getCivilians', async (req, res) => {
+
+    // console.log(db);
+    try {
+        const civilians = await getCivilians();
+        res.status(200).json(civilians);
     } catch (error) {
         res.status(500).send(error.message);
     }
