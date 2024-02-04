@@ -29,35 +29,37 @@ export async function getCivilians(){
     return civilians;
 }
 //////////////////////////////////////////
-export async function getCivilianZoneAllocations(civilian){ //SOMEONE ELSE FIGURE OUT MAX PROXIMITY
-    const zones = getZones();
+// Assuming getZones is an async function
+async function getCivilianZoneAllocations(civilian) {
+    const zones = await getZones(); // await added for async call
     const maxProximity = 100;
-    const filteredSafeZones =  filterSafeZones(civilian, zones, maxProximity);
-    const assignedSafeZone = assignSafeZone(civilian, filteredSafeZones);
+    const filteredSafeZones = filterSafeZones(civilian, zones, maxProximity);
+    return assignSafeZone(civilian, filteredSafeZones); // Return the assigned safe zone
 }
+
 // ^ RELIES ON:
+// Assuming haversine function is defined elsewhere correctly
 function filterSafeZones(civilian, zones, maxProximity) {
     return zones.filter(zone =>
         haversine(civilian.data.latitude, civilian.data.longitude, zone.data.latitude, zone.data.longitude) <= maxProximity
     );
 }
+
 // Function to assign a safe zone to a person based on fitness and type
-function assignSafeZone(civilian, filteredZones) { // this won't work off the bat
-    zoneClasses = [];
-    for(filteredZone in filteredZones)
-    {
-        classArray = []
-        if(filteredZone.data.imM == 1)
-        {
-            classArray.push("M")
+function assignSafeZone(civilian, filteredZones) {
+    const maxProximity = 100; // Define maxProximity if it's needed here
+    const zoneClasses = filteredZones.map(zone => {
+        let classArray = [];
+        if (zone.data.imM === 1) {
+            classArray.push("M");
         }
-        if(filterSafeZones.data.isFC == 1)
-        {
+        if (zone.data.isFC === 1) {
             classArray.push("F");
             classArray.push("C");
         }
-        zoneClasses.push()
-    }
+        return classArray;
+    });
+
     if (civilian.data.fitness === 2) {
         const typeFilteredSafeZones = filteredZones.filter(safeZone => classArray[filteredZones.indexOf(safeZone)].includes(civilian.class));
         const sortedSafeZones = typeFilteredSafeZones.sort((a, b) =>
@@ -82,44 +84,42 @@ function assignSafeZone(civilian, filteredZones) { // this won't work off the ba
 }
 
 
-
-
 /////////////////////////////////////////////
-export async function getPersonAndNearest(civilian){ // FOR NIC
+async function getPersonAndNearest(civilian) {
     const civlat = civilian.data.latitude;
     const civlong = civilian.data.longitude;
-    const querySnapshot = await getDocs(collection(db, "placeholder")) //unsure here PETER
-    const zones = getZones();
-    index = 0;
-    shortdist = 1000000000; //arbitrarily big, replace with positive infinity? idk how that works in js
+    const zones = await getZones();
+    let shortestDistance = Number.POSITIVE_INFINITY; // Replaced arbitrary large number with Infinity
+    let closestZoneIndex = 0;
+
     for (let i = 0; i < zones.length; i++) {
         const zone = zones[i];
-        const zonelat = zone.data.latitude;
-        const zonelong = zone.data.longitude;
-        dist = getHaversine(civlat,civlong,zonelat,zonelong);
-        if(dist < shortdist)
-        {
-            index = i;
+        const dist = await getHaversine(civlat, civlong, zone.data.latitude, zone.data.longitude);
+        if (dist < shortestDistance) {
+            shortestDistance = dist;
+            closestZoneIndex = i;
         }
-
-        
     }
-    return [civlat, civlong, zones[index].data.latitude, zones[index].data.longitude];
 
-
+    return [civlat, civlong, zones[closestZoneIndex].data.latitude, zones[closestZoneIndex].data.longitude];
 }
-export async function getHaversine(lat1, lon1, lat2, lon2){ //check that this works, it was basically copied from python
-    R = 6371;  //Earth radius in kilometers
 
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
+async function getHaversine(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in kilometers
 
-    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    const dlat = toRadians(lat2 - lat1);
+    const dlon = toRadians(lon2 - lon1);
 
-    distance = R * c  /Distance in kilometers
-    return distance
+    const a = Math.sin(dlat / 2) ** 2 + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dlon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Distance in kilometers
 }
+
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+
 
 export async function addCivilian(civilianData) {
     const data = {
@@ -131,20 +131,15 @@ export async function addCivilian(civilianData) {
         class: civilianData.class,
     };
 
-    const assignedSafeData = {
-        fitness: data.fitness,
-        latitude: data.latitude,
-        longitude: data.longitude,
-        class: data.class,
-    }
-    zone = assignSafeZone(assignedSafeData)
+    const assignedSafeData = await getCivilianZoneAllocations(data);
 
     const res = await addDoc(collection(db, "civilians"), data);
+
     console.log(res);
+
+    return assignedSafeData;
+
 }
-
-
-
 
 
 //////////////////////////////////////////////////
