@@ -159,7 +159,7 @@ if __name__ == "__main__": # fix | ability, class, email, location, name, zone
                     longOutput = abs(longOutput)
                     body = f"Dear {userName},\n"\
             
-                    f"There is a safe zone approximately {prox} km away, at coordinates {latOutput} degrees {eastwest}, {longOutput} {northsouth}\n"\
+                    f"There is a safe zone approximately {prox} km away, at coordinates {latOutput} degrees {eastwest}, {longOutput} degrees {northsouth}\n"\
                     "From the team at Get In Your Zone"
                     send_email(gmail_service, sender_email, to_email, subject, body)
     with open('lastjson.json', 'w') as f:
