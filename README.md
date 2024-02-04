@@ -5,10 +5,14 @@ Get in The Zone is a web application designed to help civilians in war torn coun
 
 # APIs used
 Google Maps
+
 Gmail
+
 fastAPI
+
 Terra
 
 # # UI examples
 ![image2](https://github.com/petergalati/GiT-zone/assets/110602627/5953e195-23d1-4f75-8451-d467ed0e9509)
 ![image1](https://github.com/petergalati/GiT-zone/assets/110602627/e5460f6b-b10d-4573-a389-bf13c58d9601)
+![image3](https://github.com/petergalati/GiT-zone/assets/110602627/a0a615db-ecf3-493e-aec3-1fb2e64abe84)
