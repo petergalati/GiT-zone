@@ -25,11 +25,11 @@ export async function getCivilians(){
     return civilians;
 }
 //////////////////////////////////////////
-export async function getCivilianZoneAllocations(){ //SOMEONE ELSE FIGURE OUT MAX PROXIMITY
-    const querySnapshot = await getDocs(collection(db, "placeholder")) //unsure here PETER
-    const civilians = getCivilians();
+export async function getCivilianZoneAllocations(civilian){ //SOMEONE ELSE FIGURE OUT MAX PROXIMITY
     const zones = getZones();
-    //DJKFN;SOEKJF
+    const maxProximity = 100;
+    const filteredSafeZones =  filterSafeZones(civilian, zones, maxProximity);
+    const assignedSafeZone = assignSafeZone(civilian, filteredSafeZones);
 }
 // ^ RELIES ON:
 function filterSafeZones(civilian, zones, maxProximity) {
@@ -39,8 +39,23 @@ function filterSafeZones(civilian, zones, maxProximity) {
 }
 // Function to assign a safe zone to a person based on fitness and type
 function assignSafeZone(civilian, filteredZones) { // this won't work off the bat
+    zoneClasses = [];
+    for(filteredZone in filteredZones)
+    {
+        classArray = []
+        if(filteredZone.data.imM == 1)
+        {
+            classArray.push("M")
+        }
+        if(filterSafeZones.data.isFC == 1)
+        {
+            classArray.push("F");
+            classArray.push("C");
+        }
+        zoneClasses.push()
+    }
     if (civilian.data.fitness === 2) {
-        const typeFilteredSafeZones = filteredZones.filter(safeZone => safeZone.type === person.type);
+        const typeFilteredSafeZones = filteredZones.filter(safeZone => classArray[filteredZones.indexOf(safeZone)].includes(civilian.class));
         const sortedSafeZones = typeFilteredSafeZones.sort((a, b) =>
             (a.data.currentRefugees / a.data.capacity) - (b.data.currentRefugees / b.data.capacity)
         );
@@ -54,7 +69,7 @@ function assignSafeZone(civilian, filteredZones) { // this won't work off the ba
         );
         return sortedSafeZones[0];
     } else {
-        const sortedSafeZones = filteredZones.sort((a, b) =>
+        const sortedSafeZones = filteredZones.sort((a, b) => //idk if this works
             haversine(civilian.data.latitude, civilian.data.longitude, a.data.latitude, a.data.longitude) - 
             haversine(civilian.latitude, civilian.data.longitude, b.data.latitude, b.data.longitude)
         );
