@@ -35,11 +35,11 @@ async def auth():
 @app.get('/on_auth_success')
 async def auth_success(user_id: str, reference_id: str):
 
-    res = requests.get('https://api.tryterra.co/v2/daily',
+    res = requests.get('https://api.tryterra.co/v2/activity',
         params={
             'user_id': user_id, 
-            'start_date': '2024-01-25', 
-            'end_date': '2024-02-03', 
+            'start_date': '1706918400', 
+            'end_date': '1707017316', 
             'with_samples': True, 
             'to_webhook': True,            # set this to true if you prefer we send the data to your database or to the webhook you can setup below
         },
@@ -51,20 +51,7 @@ async def auth_success(user_id: str, reference_id: str):
 
     data = res.json()
 
-    #print(data)
-    
-
-    return { 'user_id': user_id, 'ref': reference_id, 'data': data  }
-
-#@app.post('/consume')
-#async def consume(request: Request):
-#    data = await request.json()
-
-    # you can now do whatever you want with the data
-    # checkout https://docs.tryterra.co/reference/v2
-    # to see what the data would look like.
-
-#    return { 'success': 'ok' }
+    return RedirectResponse('https://www.google.com')
 
 @app.get('/get_firestore_data')
 def firebase_query():
