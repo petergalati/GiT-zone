@@ -16,16 +16,6 @@ export async function addZone(zoneData) {
     console.log(res);
 };
 
-// Endpoint to add a civilian
-expressApp.post('/addCivilian', async (req, res) => {
-    try {
-        const data = req.body;
-        const response = await addCivilian(data);
-        res.status(200).send(`Civilian added with response: ${JSON.stringify(response)}`);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
 
 
 
