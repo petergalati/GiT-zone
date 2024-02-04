@@ -1,5 +1,6 @@
 import { useNavigate} from "react-router-dom";
 import {useState} from "react";
+import {addCivilian} from "../firebase/query";
 
 export default function LoginPage(){
     const [formData, setFormData] = useState({
@@ -20,7 +21,15 @@ export default function LoginPage(){
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form Data:', formData);
-
+        await addCivilian({
+            name: formData.name,
+            email: formData.email,
+            class: formData.class,
+            longitude: parseFloat(formData.longitude),
+            latitude: parseFloat(formData.latitude),
+            fitness: formData.ability,
+            id: formData.id
+        })
         navigate('/MyMapComponent', { state: { myLocation: { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } } });
         // Here you would typically send formData to your server or API
     };
