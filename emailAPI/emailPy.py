@@ -11,6 +11,10 @@ import math
 #input = '[{"radius":5,"nickname":"Zone 1","epicenter":{"lng":-0.1278,"lat":51.5074},"capacity":100,"isFC":false,"imM":true},{"nickname":"test_zone","isWC":false,"isM":false,"radius":10,"capacity":200,"epicenter":{"latitude":5,"longitude":15}}]'
 json_data = json.loads(input)
 #json_data = getZones()
+
+civ_json_data = [] # fix | ability, class, email, location, name, zone
+
+
 with open('lastjson.json', 'r') as file:
     try:
         lastinput= json.load(file)
@@ -116,12 +120,19 @@ def haversine(lat1, lon1, lat2, lon2):
 
     distance = R * c  # Distance in kilometers
     return distance
-if __name__ == "__main__":
+if __name__ == "__main__": # fix | ability, class, email, location, name, zone
     gmail_service = main()
     sender_email = 'archierowbotham2021@gmail.com'
     subject = 'New Safezone Alert'
     #users = [None] * 10 #update for sql
     zones = json_data
+    #for civilian in civ_json_data:
+        #if(!civilian["zone"] is None):
+            #to_email = civilian["email"]
+            #latlongUser = civilian["location"]
+            #userName = civilian["name"] ##put next stuff here
+
+
     if(len(json_data) > len(lastinput)): ##ASSUMING APPENDS, APPENDS ONLY ONCE
         new_zone_dict = json_data[-1] # take last one
         to_email = 'archierowbotham2021@gmail.com' #change to user[i]$Email or equivalent
