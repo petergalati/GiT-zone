@@ -1,0 +1,1 @@
+[{"radius": 5, "nickname": "Zone 1", "epicenter": {"lng": -0.1278, "lat": 51.5074}, "capacity": 100, "isFC": false, "imM": true}, {"nickname": "test_zone", "isWC": false, "isM": false, "radius": 10, "capacity": 200, "epicenter": {"latitude": 5, "longitude": 15}}]

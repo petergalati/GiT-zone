@@ -19,7 +19,14 @@ export const Menu = ({ position, onAddZone }) => {
                 {/* Form fields for capacity, imM, isFC, nickname, radius */}
                 <label>Capacity
                 <input type="number" name="capacity" /></label>
+                <label> number of men</label>
                 <input type="number" name="imM" />
+                <label> number of women/children</label>
+                <input type="number" name="isFC" />
+                <label> radius</label>
+                <input type="number" name="radius" />
+                <label> name</label>
+                <input type="string" name="nickname" />
                 <button type="submit">Add Zone</button>
             </form>
         </div>
