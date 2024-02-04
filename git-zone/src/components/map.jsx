@@ -3,6 +3,7 @@ import { useState} from "react";
 import { Menu } from "./menu";
 import {Circle} from "./Circle";
 import Directions from "./Directions";
+import {addZone} from "../firebase/query.js";
 
 
 
@@ -35,6 +36,7 @@ const BadMap = () => {
     const handleAddZone = (zoneData) => {
         zones.push(zoneData)
         console.log(zones)
+        addZone(zoneData)
         const newMarker = {
             position: zoneData.epicenter,
             clickable: true,
