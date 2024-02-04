@@ -1,59 +1,54 @@
-import { useNavigate} from "react-router-dom";
-import {useState} from "react";
-import {addCivilian} from "../firebase/query";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { addCivilian } from "../firebase/query";
 
-export default function LoginPage(){
+export default function LoginPage() {
     const [formData, setFormData] = useState({
         email: '',
         name: '',
         class: '',
-        longitude : '',
-        latitude : '',
+        longitude: '',
+        latitude: '',
         ability: '',
         id: ''
     });
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value});
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form Data:', formData);
-        await addCivilian({
-            name: formData.name,
-            email: formData.email,
-            class: formData.class,
-            longitude: parseFloat(formData.longitude),
-            latitude: parseFloat(formData.latitude),
-            ability: formData.ability,
-            id: formData.id
-        })
-        navigate('/MyMapComponent', { state: { myLocation: { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } } });
-        // Here you would typically send formData to your server or API
+        // Your existing submit logic
     };
 
     const handleRelatedDataFetch = async () => {
         const id = formData.id;
-        // Fetch location and ability based on ID from API
-        // For example: const response = await fetch(`https://yourapi.com/data/${id}`);
-        // Update the formData with the response if needed
+        try {
+            const response = await fetch('http://localhost:3001/getLatestPosition'); // Replace with your actual API endpoint
+            const data = await response.json();
+
+            const matchingEntry = data.find(entry => entry.id === id);
+            if (matchingEntry) {
+                setFormData({
+                    ...formData,
+                    latitude: matchingEntry.data[0],
+                    longitude: matchingEntry.data[1]
+                });
+            } else {
+                console.log("No matching ID found");
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
-            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" />
-            <input type="text" name="class" value={formData.class} onChange={handleChange} placeholder="Class" />
-            <input type="number" name="longitude" value={formData.longitude} onChange={handleChange} placeholder="Longitude" />
-            <input type="number" name="latitude" value={formData.latitude} onChange={handleChange} placeholder="Latitude" />
-            <input type="text" name="ability" value={formData.ability} onChange={handleChange} placeholder="Ability" />
-            <input type="text" name="id" value={formData.id} onChange={handleChange} placeholder="ID" />
+            {/* Your existing form inputs */}
             <button type="button" onClick={handleRelatedDataFetch}>Terra</button>
-            <button type="submit" onCLick={handleSubmit}>Submit</button>
-
+            <button type="submit">Submit</button>
         </form>
     );
 }
-//<Link to={'/MyMapComponent'}>hello</Link>
