@@ -1,44 +1,25 @@
-import React from 'react'
-import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api';
+import React from 'react';
+import './App.css';
+import MyMapComponent from './pages/MyMapComponent';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
 
-const containerStyle = {
-  width: '400px',
-  height: '400px'
-};
-
-const center = {
-  lat: -3.745,
-  lng: -38.523
-};
-
-function MyComponent() {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyDVGnLbmVRcZ9s82BWKTJ01SipwMv9fDQU"
-  })
-
-
-  const dummyMarkers =[{
-      position:{lat: 51.507351, lng: -0.127758}
-  },{position:{lat: 52.507351, lng: -0.127758}}]
-  return  (
-      <div style={{ height: '100vh', width: '100%' }}>
-      <GoogleMap
-          mapContainerStyle={{
-              width: '1000px',
-              height: '700px'
-          }}
-          center={{lat: 51.507351, lng: -0.127758}}
-          zoom={15}
-      >
-          {dummyMarkers.map((marker,index)=>(
-              <Marker  position={marker.position}/>
-          ))}
-
-        <></>
-      </GoogleMap>
+function App() {
+    return (
+        <div>
+            <header>
+                CIVILIAN
+            </header>
+        <Router>
+            <div className="App">
+                <Routes>
+                    <Route exact path='/' element={<LoginPage/>}/>
+                    <Route path='/MyMapComponent' element={<MyMapComponent/>}/>
+                </Routes>
+            </div>
+        </Router>
         </div>
-  )
+    );
 }
 
-export default React.memo(MyComponent)
+export default App;

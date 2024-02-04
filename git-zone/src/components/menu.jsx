@@ -1,3 +1,4 @@
+import './styles.css'
 export const Menu = ({ position, onAddZone }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -5,8 +6,8 @@ export const Menu = ({ position, onAddZone }) => {
         const zoneData = {
             capacity: formData.get('capacity'),
             epicenter: position, // or format as needed
-            imM: formData.get('imM'),
-            isFC: formData.get('isFC'),
+            imM:  formData.get('imM') === 'on',
+            isFC:  formData.get('isFC') === 'on',
             nickname: formData.get('nickname'),
             radius: formData.get('radius'),
         };
@@ -14,19 +15,19 @@ export const Menu = ({ position, onAddZone }) => {
     };
 
     return (
-        <div style={{ position: 'absolute', top: position.lat, left: position.lng }}>
+        <div  className="menu" style={{ position: 'absolute', top: position.lat, left: position.lng }}>
             <form onSubmit={handleSubmit}>
                 {/* Form fields for capacity, imM, isFC, nickname, radius */}
-                <label>Capacity
-                <input type="number" name="capacity" /></label>
-                <label> number of men</label>
-                <input type="number" name="imM" />
-                <label> number of women/children</label>
-                <input type="number" name="isFC" />
-                <label> radius</label>
-                <input type="number" name="radius" />
-                <label> name</label>
-                <input type="string" name="nickname" />
+                <label className="form-label">Capacity
+                <input className="form-input" type="number" name="capacity" /></label>
+                <label className="form-label"> for men</label>
+                <input className="form-input" type="checkbox" name="imM" />
+                <label className="form-label"> for women and children</label>
+                <input className="form-input" type="checkbox" name="isFC" />
+                <label className="form-label"> radius</label>
+                <input className="form-input" type="number" name="radius" />
+                <label className="form-label"> name</label>
+                <input className="form-input" type="string" name="nickname" />
                 <button type="submit">Add Zone</button>
             </form>
         </div>

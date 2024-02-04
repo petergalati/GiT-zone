@@ -59,7 +59,7 @@ function useCircle(props) {
     useEffect(() => {
         if (!map) {
             if (map === undefined)
-                console.error('<Circle> has to be inside a Map component.');
+                console.error('<Circle> has to be inside a MyMapComponent component.');
 
             return;
         }

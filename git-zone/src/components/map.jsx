@@ -1,28 +1,20 @@
 import {APIProvider, Map, Marker} from "@vis.gl/react-google-maps";
-import { useState} from "react";
+import { useState,useEffect} from "react";
 import { Menu } from "./menu";
 import {Circle} from "./Circle";
-import Directions from "./Directions";
-import {addZone} from "../firebase/query.js";
-
-
-
-const zones = [];  
-// console.
-// const dummy=[{
-//     position : {lat: 51.507351, lng: -0.127758}
-//
-// },{
-//     position: {lat: 52.007351, lng: -0.127758}
-// }]
-
-
+import {addZone, getZones} from "../firebase/query.js";
+import './styles.css'
 
 const BadMap = () => {
-    const [markerList, setMarkerList] = useState([]);
-    const [circleList,setCircleList] = useState([])
     const [menuPosition, setMenuPosition] = useState(null)
     const [showMenu, setShowMenu] = useState(false);
+    const [zoneList, setZoneList] = useState([]);
+
+    useEffect(() => {
+        getZones().then(zones => {
+            setZoneList(zones);
+        });
+    }, []);
 
     const handleMapClick = (mapsMouseEvent) => {
 
@@ -34,26 +26,14 @@ const BadMap = () => {
 
     };
     const handleAddZone = (zoneData) => {
-        zones.push(zoneData)
-        console.log(zones)
         addZone(zoneData)
-        const newMarker = {
-            position: zoneData.epicenter,
-            clickable: true,
-            title: zoneData.nickname
-        };
-        const newCircle ={
-            position: zoneData.epicenter,
-            radius: parseInt(zoneData.radius)*50
-        }
-        setCircleList((prevCircles)=>[...prevCircles,newCircle]);
-        setMarkerList((prevMarkers) => [...prevMarkers, newMarker]);
+        zoneList.push(zoneData)
 
 
         setShowMenu(false);};
 
 
-    return (<div style={{ height: '100vh', width: '100%' }}>
+    return (<div className='mapContainer' style={{ height: '100vh', width: '100%' }}>
         <APIProvider apiKey={"AIzaSyDVGnLbmVRcZ9s82BWKTJ01SipwMv9fDQU"}>
             <Map
                 key={1}
@@ -66,26 +46,28 @@ const BadMap = () => {
                 onClick={handleMapClick}
 
             >
-                {markerList.map((marker, index) => (
-                    <Marker
-                        key={index}
-                        position={marker.position}
-                        clickable={marker.clickable}
-                        title={marker.title}
-                    />
+                {/*{markerList.map((marker, index) => (*/}
 
-                ))}
-                {circleList.map((circle, index) => (<div>
+
+                {/*))}*/}
+                {zoneList.map((zone, index) => (<div>
                     <Circle
                         key={index}
-                        center={circle.position}
-                        radius={circle.radius}
+                        center={zone.epicenter}
+                        radius={zone.radius*50}
                         strokeColor= {"#00FF00"}
-                        strokeOpacity={0.8}
+                        strokeOpacity={0.5}
                         strokeWeight={10}
                         fillColor={"#FF0000"}
-                        fillOpacity={0.35}
+                        fillOpacity={0.15}
+
                     />
+                        <Marker
+                            key={index}
+                            position={zone.epicenter}
+                            clickable={true}
+                            title={zone.nickname}
+                        />
                     </div>
                 ))}
                 {/*{Directions}*/}
