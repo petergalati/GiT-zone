@@ -159,6 +159,7 @@ export async function getLatestPosition() {
     const querySnapshot = await getDocs(collection(db, 'terra/2022-03-16/activity'));
     const positions = [];
     querySnapshot.forEach((doc) => {
+
         positions.push({ id: doc.id, data: doc.data() });
     });
     // console.log(positions);
@@ -170,6 +171,7 @@ export async function getLatestPosition() {
         // console.log(posSample);
         const lastPosSample = posSample[posSample.length - 1];
         lastPosSamples.push({id: positions[i].id, data: lastPosSample.coords_lat_lng_deg});
+
     }
 
     
