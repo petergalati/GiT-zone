@@ -25,3 +25,16 @@ export async function getZones() {
     console.log(zones);
     return zones;
 };
+
+// dhillons terra stuff
+
+export async function getLatestPosition() {
+    const querySnapshot = await getDocs(collection(db, 'terra/2022-03-16/activity'));
+    const positions = [];
+    querySnapshot.forEach((doc) => {
+        positions.push(doc.data());
+    });
+    console.log(positions);
+    return positions;
+}
+
