@@ -27,7 +27,7 @@ export default function LoginPage(){
             class: formData.class,
             longitude: parseFloat(formData.longitude),
             latitude: parseFloat(formData.latitude),
-            fitness: formData.ability,
+            ability: formData.ability,
             id: formData.id
         })
         navigate('/MyMapComponent', { state: { myLocation: { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } } });

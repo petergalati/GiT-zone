@@ -14,7 +14,7 @@ export async function addZone(zoneData) {
     };
 
     const res = await addDoc(collection(db, "zones"), data);
-    console.log(res);
+    // console.log(res);
 };
 
 export async function getCivilians(){
@@ -23,35 +23,47 @@ export async function getCivilians(){
     querySnapshot.forEach((doc) => {
         civilians.push(doc.data());
     })
-    console.log(civilians);
+    // console.log(civilians);
     return civilians;
 }
 
 export async function addCivilian(civilianData) {
+    try {
+        const zone = await getZoneAllocation(civilianData);
+        console.log(zone);
+
+        // if (!zone) {
+        //     // Handle undefined zone here
+        //     // console.error('Zone is undefined');
+        //     // Optionally, throw an error or assign a default value
+        //     // throw new Error('Zone allocation failed');
+        //     // zone = defaultZoneValue;
+        // }
+
+        let data = {
+            name: civilianData.name,
+            email: civilianData.email,
+            ability: civilianData.ability,
+            latitude: civilianData.latitude,
+            longitude: civilianData.longitude,
+            class: civilianData.class,
+            zone: zone // Use null or a default value if zone is undefined
+        };
+
+        console.log(data)
+        const res = await addDoc(collection(db, "civilians"), data);
+    } catch (error) {
+        // console.error('Error in addCivilian:', error);
+        throw error;
+    }
+}
 
 
-    const zone = await getZoneAllocation(civilianData);
-    console.log(zone)
-
-    let data = {
-        name: civilianData.name,
-        email: civilianData.email,
-        ability: civilianData.fitness,
-        latitude: civilianData.latitude,
-        longitude: civilianData.longitude,
-        class: civilianData.class,
-        zone: zone,
-    };
-
-    console.log(data)
-
-    const res = await addDoc(collection(db, "civilians"), data);
-
-    // console.log(res);
+    // // console.log(res);
 
     // return assignedSafeData;
 
-}
+
 
 // / civillian stuff
 
@@ -64,29 +76,33 @@ async function getZoneAllocation(civilianData) {
         class: civilianData.class, // M, F, C
     };
 
-    const zones = await getZones();
+    const zones = await getZonesAndId();
+    console.log(zones)
 
     const distances = zones.map(zone => {
         const distance = getDistance(
-            { latitude: zone.epicenter.lat, longitude: zone.epicenter.lng },
+            { latitude: zone.data.epicenter.lat, longitude: zone.data.epicenter.lng },
             { latitude: data.latitude, longitude: data.longitude }
         );
-        return { zoneId: zone.id, zone, distance };
+        return { zoneId: zone.id, zone : zone, distance : distance };
     });
 
     distances.sort((a, b) => a.distance - b.distance);
-    // console.log(distances)
-    if (data.ability === 0) {
+    console.log(data.ability)
+    console.log(distances[0].zoneId)
+    // // console.log(distances)
+    if (data.ability === '0') {
         // return the closest zone with the lowest capacity
-        return distances[0]
-    } else if (data.ability === 1) {
+        console.log(distances[0].zoneId)
+        return distances[0].zoneId
+    } else if (data.ability === '1') {
         // return the closest zone with the same category as the civilian
-        return distances[0]
-    } else if (data.ability === 2) {
+        return distances[0].zoneId
+    } else if (data.ability === '2') {
         // return the second closest zone and the same class as the civilian
-        return distances[0]
+        return distances[0].zoneId
     }
-    // console.log(distances);
+    // // console.log(distances);
 }
 
 //////////////////////////////////////////////////
@@ -96,9 +112,20 @@ export async function getZones() {
     querySnapshot.forEach((doc) => {
         zones.push(doc.data());
     });
-    // console.log(zones);
+    console.log(zones);
     return zones;
 };
+
+export async function getZonesAndId() {
+    const querySnapshot = await getDocs(collection(db, 'zones'));
+    const zones = [];
+    querySnapshot.forEach((doc) => {
+        zones.push({id: doc.id, data: doc.data()});
+    });
+    // // console.log(zones);
+    return zones;
+
+}
 
 // dhillons terra stuff
 
@@ -108,13 +135,13 @@ export async function getLatestPosition() {
     querySnapshot.forEach((doc) => {
         positions.push({ id: doc.id, data: doc.data() });
     });
-    // console.log(positions);
+    // // console.log(positions);
 
     const lastPosSamples = [];
     for (let i = 0; i < positions.length; i++) {
         // posData.push(positions[i].position_data);
         const posSample = positions[i].data.position_data.position_samples;
-        // console.log(posSample);
+        // // console.log(posSample);
         const lastPosSample = posSample[posSample.length - 1];
         lastPosSamples.push({id: positions[i].id, data: lastPosSample.coords_lat_lng_deg});
     }
