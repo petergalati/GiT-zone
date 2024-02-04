@@ -7,8 +7,10 @@ import json
 import os.path
 import base64
 import math
-input = '[{"radius":5,"nickname":"Zone 1","epicenter":{"lng":-0.1278,"lat":51.5074},"capacity":100,"isFC":false,"imM":true},{"nickname":"test_zone","isWC":false,"isM":false,"radius":10,"capacity":200,"epicenter":{"latitude":5,"longitude":15}}]'
+#import node_modules
+#input = '[{"radius":5,"nickname":"Zone 1","epicenter":{"lng":-0.1278,"lat":51.5074},"capacity":100,"isFC":false,"imM":true},{"nickname":"test_zone","isWC":false,"isM":false,"radius":10,"capacity":200,"epicenter":{"latitude":5,"longitude":15}}]'
 json_data = json.loads(input)
+#json_data = getZones()
 with open('lastjson.json', 'r') as file:
     try:
         lastinput= json.load(file)
@@ -137,6 +139,7 @@ if __name__ == "__main__":
         prox = getDistance(latlongUser, latlongSafeZone, radiusSafeZone)
         doEmail = proximity_filter(prox,maxProximity)
         userName = "Jane Doe"
+
         if(doEmail):
             latOutput = latlongSafeZone[0]
             longOutput = latlongSafeZone[1]
@@ -144,6 +147,8 @@ if __name__ == "__main__":
             f"There is a safe zone approximately {prox} km away, at coordinates {latOutput} degrees east, {longOutput} north\n"\
             "From the team at Get In Your Zone"
             send_email(gmail_service, sender_email, to_email, subject, body)
+        with open('lastjson.json', 'w') as f:
+            json.dump(json_data, f)
 
     
 

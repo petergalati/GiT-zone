@@ -25,11 +25,11 @@ export async function getCivilians(){
     return civilians;
 }
 //////////////////////////////////////////
-export async function getCivilianZoneAllocations(){ //SOMEONE ELSE FIGURE OUT MAX PROXIMITY
-    const querySnapshot = await getDocs(collection(db, "placeholder")) //unsure here PETER
-    const civilians = getCivilians();
+export async function getCivilianZoneAllocations(civilian){ //SOMEONE ELSE FIGURE OUT MAX PROXIMITY
     const zones = getZones();
-    //DJKFN;SOEKJF
+    const maxProximity = 100;
+    const filteredSafeZones =  filterSafeZones(civilian, zones, maxProximity);
+    const assignedSafeZone = assignSafeZone(civilian, filteredSafeZones);
 }
 // ^ RELIES ON:
 function filterSafeZones(civilian, zones, maxProximity) {
