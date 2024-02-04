@@ -31,7 +31,7 @@ export async function getCivilianZoneAllocations(civilian){ //SOMEONE ELSE FIGUR
     const filteredSafeZones =  filterSafeZones(civilian, zones, maxProximity);
     const assignedSafeZone = assignSafeZone(civilian, filteredSafeZones);
 }
-// ^ RELIES ON:
+
 function filterSafeZones(civilian, zones, maxProximity) {
     return zones.filter(zone =>
         haversine(civilian.data.latitude, civilian.data.longitude, zone.data.latitude, zone.data.longitude) <= maxProximity
@@ -42,7 +42,7 @@ function assignSafeZone(civilian, filteredZones) { // this won't work off the ba
     zoneClasses = [];
     for(filteredZone in filteredZones)
     {
-        classArray = []
+        classArray = [] 
         if(filteredZone.data.imM == 1)
         {
             classArray.push("M")

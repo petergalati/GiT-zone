@@ -9,11 +9,18 @@ import base64
 import math
 #import node_modules
 #input = '[{"radius":5,"nickname":"Zone 1","epicenter":{"lng":-0.1278,"lat":51.5074},"capacity":100,"isFC":false,"imM":true},{"nickname":"test_zone","isWC":false,"isM":false,"radius":10,"capacity":200,"epicenter":{"latitude":5,"longitude":15}}]'
-json_data = json.loads(input)
+input = requests.get("https://hostname:3001/getZones()")
+try:
+    json_data = json.loads(input)
+except:
+    json_data = input
 #json_data = getZones()
 
-civ_json_data = [] # fix | ability, class, email, location, name, zone
-
+civ_input = requests.get("https://hostname:3001/getCivilians()") # fix | ability, class, email, location, name, zone
+try:
+    civ_json_data = json.loads(civ_input)
+except:
+    civ_json_data = civ_input
 
 with open('lastjson.json', 'r') as file:
     try:
@@ -21,19 +28,13 @@ with open('lastjson.json', 'r') as file:
     except:
         lastinput = []
 
-
-
-
-
-#print(type(json_data[0]))
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 apikey = "AIzaSyDNR2mypaoRVSmUfIWWPGgZ2ALL8UoP5MU"
-# If modifying these scopes, delete the file token.json.
+# If modifying these scopes, delete the file token.json then regenerate it
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.labels']
 
 
@@ -124,42 +125,47 @@ if __name__ == "__main__": # fix | ability, class, email, location, name, zone
     gmail_service = main()
     sender_email = 'archierowbotham2021@gmail.com'
     subject = 'New Safezone Alert'
-    #users = [None] * 10 #update for sql
-    zones = json_data
-    #for civilian in civ_json_data:
-        #if(!civilian["zone"] is None):
-            #to_email = civilian["email"]
-            #latlongUser = civilian["location"]
-            #userName = civilian["name"] ##put next stuff here
-
-
-    if(len(json_data) > len(lastinput)): ##ASSUMING APPENDS, APPENDS ONLY ONCE
-        new_zone_dict = json_data[-1] # take last one
-        to_email = 'archierowbotham2021@gmail.com' #change to user[i]$Email or equivalent
+    for civilian in civ_json_data:
+        if(civilian["zone"] is None or True): #simplification - always True for current testing purposes, but intent shown
+            to_email = civilian["email"]
+            latlongUser = civilian["location"]
+            userName = civilian["name"] ##put next stuff here
+            if(len(json_data) > len(lastinput)): ##ASSUMING APPENDS, APPENDS ONLY ONCE
+                new_zone_dict = json_data[-1] # take last one
+                to_email = 'archierowbotham2021@gmail.com' #change to user[i]$Email or equivalent
     
-        latlongUser = [50,30]
-        tempdict = new_zone_dict["epicenter"]
-        print(tempdict)
-        latlongSafeZone = [tempdict["latitude"], tempdict["longitude"]]
-        print(latlongSafeZone)
-        radiusSafeZone = new_zone_dict["radius"]
-        print(type(latlongUser))
-        print(type(latlongSafeZone))
-        maxProximity = 20000 # arbitrary
+                tempdict = new_zone_dict["epicenter"]
+                print(tempdict)
+                latlongSafeZone = [tempdict["latitude"], tempdict["longitude"]]
+                print(latlongSafeZone)
+                radiusSafeZone = new_zone_dict["radius"]
+                print(type(latlongUser))
+                print(type(latlongSafeZone))
+                maxProximity = 80 # arbitrary
         
-        prox = getDistance(latlongUser, latlongSafeZone, radiusSafeZone)
-        doEmail = proximity_filter(prox,maxProximity)
-        userName = "Jane Doe"
+                prox = getDistance(latlongUser, latlongSafeZone, radiusSafeZone)
+                doEmail = proximity_filter(prox,maxProximity)
 
-        if(doEmail):
-            latOutput = latlongSafeZone[0]
-            longOutput = latlongSafeZone[1]
-            body = f"Dear {userName},\n"\
-            f"There is a safe zone approximately {prox} km away, at coordinates {latOutput} degrees east, {longOutput} north\n"\
-            "From the team at Get In Your Zone"
-            send_email(gmail_service, sender_email, to_email, subject, body)
-        with open('lastjson.json', 'w') as f:
-            json.dump(json_data, f)
+                if(doEmail):
+                    latOutput = latlongSafeZone[0]
+                    longOutput = latlongSafeZone[1]
+                    eastwest = "east"
+                    if(longOutput < 0):
+                        eastwest = "west"
+                    northsouth = "north"
+                    if(latOutput < 0):
+                        northsouth = "south"
+                    latOutput =  abs(latOutput)
+                    longOutput = abs(longOutput)
+                    body = f"Dear {userName},\n"\
+            
+                    f"There is a safe zone approximately {prox} km away, at coordinates {latOutput} degrees {eastwest}, {longOutput} {northsouth}\n"\
+                    "From the team at Get In Your Zone"
+                    send_email(gmail_service, sender_email, to_email, subject, body)
+    with open('lastjson.json', 'w') as f:
+        json.dump(json_data, f)
+
+    
 
     
 
