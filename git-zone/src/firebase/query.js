@@ -104,7 +104,7 @@ export async function getPersonAndNearest(civilian){ // FOR NIC
 
 
 }
-export async function getHaversine(lat1, lon1, lat2, lon2){ //check that this works, it was basically copied from python
+export async function getHaversine(lat1, lon1, lat2, lon2){ s
     R = 6371;  //Earth radius in kilometers
 
     dlat = math.radians(lat2 - lat1)
