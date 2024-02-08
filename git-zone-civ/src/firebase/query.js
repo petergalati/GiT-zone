@@ -30,7 +30,7 @@ export async function getCivilians(){
 export async function addCivilian(civilianData) {
     try {
         const zone = await getZoneAllocation(civilianData);
-        console.log(zone);
+        // console.log(zone);
 
         // if (!zone) {
         //     // Handle undefined zone here
@@ -59,9 +59,9 @@ export async function addCivilian(civilianData) {
 }
 
 
-    // // console.log(res);
+// // console.log(res);
 
-    // return assignedSafeData;
+// return assignedSafeData;
 
 
 
@@ -75,22 +75,32 @@ async function getZoneAllocation(civilianData) {
         longitude: civilianData.longitude,// { latitude: x, longitude: y }
         class: civilianData.class, // M, F, C
     };
-
+    console.log("HELLO")
     const zones = await getZonesAndId();
+    console.log("zone time")
     console.log(zones)
 
-    const distances = zones.map(zone => {
+    const distances = [];
+
+    for (const zone of zones) {
+        console.log( zone.id)
+        console.log( zone.data.epicenter.lat)
+        console.log( zone.data.epicenter.lng)
+        console.log( data.latitude)
+        console.log( data.longitude)
         const distance = getDistance(
-            { latitude: zone.data.epicenter.lat, longitude: zone.data.epicenter.lng },
-            { latitude: data.latitude, longitude: data.longitude }
+            { latitude: String(zone.data.epicenter.latitude), longitude: String(zone.data.epicenter.longitude) },
+            { latitude: String(data.latitude), longitude: String(data.longitude) },
         );
-        return { zoneId: zone.id, zone : zone, distance : distance };
-    });
+    
+        distances.push({ zoneId: zone.id, zone: zone, distance: distance });
+    }
+
 
     distances.sort((a, b) => a.distance - b.distance);
-    console.log(data.ability)
-    console.log(distances[0].zoneId)
-    // // console.log(distances)
+    // console.log(data.ability)
+    // console.log(distances[0].zoneId)
+    console.log(distances)
     if (data.ability === '0') {
         // return the closest zone with the lowest capacity
         console.log(distances[0].zoneId)
@@ -112,7 +122,7 @@ export async function getZones() {
     querySnapshot.forEach((doc) => {
         zones.push(doc.data());
     });
-    console.log(zones);
+    // console.log(zones);
     return zones;
 };
 
