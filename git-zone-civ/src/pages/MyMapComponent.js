@@ -4,16 +4,23 @@ import { getZones, getZonesAndId} from "../firebase/query";
 import './MyMapComponent.css'
 import { useLocation } from 'react-router-dom';
 
-
-
-
+const dummy ={
+    capacity: "7",
+    epicenter: {lat:51.487624970251915,lng:-0.10817865330247978},
+    imM:true,
+    isFC:false,
+    nickname:"veeraj is gay",
+    radius:"3"}
 
 function MyMapComponent() {
     const [directionsResponse, setDirectionsResponse] = React.useState(null);
+    const [myZone,setMyZone] = React.useState(dummy)
     const location = useLocation();
-    const myLocation = {lat : location.state?.data.latitude,lng:location.state?.data.longitude };
+    const myLocation = {
+        lat: location.state?.data.latitude,
+        lng: location.state?.data.longitude}
     const myTarget = location.state?.data.zone;
-    console.log(myTarget)
+
     const loadRoute = async (start, end) => {
         const directionsService = new window.google.maps.DirectionsService();
         const results = await directionsService.route({
@@ -24,58 +31,54 @@ function MyMapComponent() {
         setDirectionsResponse(results);
     };
 
-    let myZone = getZones()[0]
     React.useEffect(() => {
 
+        getZonesAndId().then(zones => {
 
-        for (let i=0;i<getZonesAndId();i++){
-            if (getZonesAndId()[i].id===myTarget){
-                myZone=getZonesAndId()[i].data;
+            if (zones.length && myLocation) {
+                for (let i = 0;i<zones.length;i++){
+                    if (zones[i].id === myTarget){
+                        setMyZone(zones[i].data)
+                        loadRoute({lat: myLocation.lat,lng :myLocation.lng}, zones[i].data.epicenter);
+
+                    }
+                }
+
             }
-        }
-        loadRoute({lat: myLocation.lat, lng: myLocation.lng}, myZone.epicenter).then(r  =>{})
+        });
 
-        ;
+
     }, []);
-    console.log("PENIS",myZone)
+
 
     return (
         <div className="map-container">
-            <GoogleMap
-                mapContainerClassName="google-map"
-            key={1}
-            zoom={15}
-            center={{lat: 51.507351, lng: -0.127758}}
-        >
-            {/*{*/}
-            {/*    zoneList.map((zone) => (<div>*/}
-            {/*    <Circle*/}
-            {/*    center={zone.epicenter}*/}
-            {/*    radius={zone.radius*50}*/}
-            {/*    options={{fillColor:'#ff0000',*/}
-            {/*        strokeColor:'#00ff00',*/}
-            {/*        strokeOpacity:0.5,*/}
-            {/*        strokeWeight:10,*/}
-            {/*        fillOpacity:0.15}}*/}
+            { (
+                <GoogleMap
+                    mapContainerClassName="google-map"
+                    key={1}
+                    zoom={15}
+                    center={{lat :51.509865, lng :-0.118092}} // Ensure myZone is not null before accessing properties
+                >
+                    {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse}/>
+                )}
+                    {console.log(myZone)}
+                    <Circle
+                        center={myZone.epicenter}
+                        radius={parseFloat(myZone.radius )* 50}
+                        options={{
+                            fillColor: '#ff0000',
+                            strokeColor: '#00ff00',
+                            strokeOpacity: 0.5,
+                            strokeWeight: 10,
+                            fillOpacity: 0.15
+                        }}
+                    />
+                    <Marker position={myZone.epicenter} title={myZone.nickname}/>
 
-            {/*    />*/}
-            {/*    <Marker position={zone.epicenter} title={zone.nickname}/>*/}
-            {/*    </div>))*/}
-            {/*}*/}
-            <Circle
-                center={myZone.epicenter}
-                radius={myZone.radius*50}
-                options={{fillColor:'#ff0000',
-                    strokeColor:'#00ff00',
-                    strokeOpacity:0.5,
-                    strokeWeight:10,
-                    fillOpacity:0.15}}/>
-                <Marker position={myZone.epicenter} title={myZone.nickname}/>
-
-            {directionsResponse && (
-                <DirectionsRenderer directions={directionsResponse} />
+                </GoogleMap>
             )}
-        </GoogleMap>
             {/*<div className="button-container">*/}
 
             {/*/!*<button onClick={() => loadRouteWithCiv(0)}>civ 1</button>*!/*/}

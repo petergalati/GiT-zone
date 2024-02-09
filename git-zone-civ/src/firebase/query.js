@@ -113,7 +113,6 @@ export async function getZones() {
     querySnapshot.forEach((doc) => {
         zones.push(doc.data());
     });
-    console.log(zones);
     return zones;
 };
 
