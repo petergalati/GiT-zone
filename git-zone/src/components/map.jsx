@@ -34,7 +34,7 @@ const BadMap = () => {
 
 
     return (<div className='mapContainer' style={{ height: '100vh', width: '100%' }}>
-        <APIProvider apiKey={"AIzaSyDVGnLbmVRcZ9s82BWKTJ01SipwMv9fDQU"}>
+        <APIProvider apiKey={"AIzaSyDA-4J7rX9bVlBFRLwoEzDcETAzaS3XPk8"}>
             <Map
                 key={1}
                 width="100%"

@@ -2,25 +2,41 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addCivilian } from "../firebase/query";
 
-export default function LoginPage() {
+export default function LoginPage(){
     const [formData, setFormData] = useState({
         email: '',
         name: '',
         class: '',
-        longitude: '',
-        latitude: '',
+        longitude : '',
+        latitude : '',
         ability: '',
         id: ''
     });
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Your existing submit logic
+        console.log('Form Data:', formData);
+
+        try {
+            // Await the result of the asynchronous function call
+            const data = await addCivilian({
+                name: formData.name,
+                email: formData.email,
+                ability: formData.ability,
+                latitude: parseFloat(formData.latitude),
+                longitude: parseFloat(formData.longitude),
+                class: formData.class,
+            });            // Navigate with the resolved data
+            navigate('/MyMapComponent', { state: { data } });
+        } catch (error) {
+            console.error('Error adding civilian:', error);
+            // Handle error if necessary
+        }
     };
 
     const handleRelatedDataFetch = async () => {
@@ -46,9 +62,17 @@ export default function LoginPage() {
 
     return (
         <form onSubmit={handleSubmit}>
-            {/* Your existing form inputs */}
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" />
+            <input type="text" name="class" value={formData.class} onChange={handleChange} placeholder="Class" />
+            <input type="number" name="longitude" value={formData.longitude} onChange={handleChange} placeholder="Longitude" />
+            <input type="number" name="latitude" value={formData.latitude} onChange={handleChange} placeholder="Latitude" />
+            <input type="text" name="ability" value={formData.ability} onChange={handleChange} placeholder="Ability" />
+            <input type="text" name="id" value={formData.id} onChange={handleChange} placeholder="ID" />
             <button type="button" onClick={handleRelatedDataFetch}>Terra</button>
-            <button type="submit">Submit</button>
+            <button type="submit" onCLick={handleSubmit}>Submit</button>
+
         </form>
     );
 }
+//<Link to={'/MyMapComponent'}>hello</Link>

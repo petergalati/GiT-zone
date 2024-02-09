@@ -52,6 +52,7 @@ export async function addCivilian(civilianData) {
 
         console.log(data)
         const res = await addDoc(collection(db, "civilians"), data);
+        return data;
     } catch (error) {
         // console.error('Error in addCivilian:', error);
         throw error;
